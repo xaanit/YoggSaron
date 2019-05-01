@@ -11,7 +11,7 @@ class Postgres {
 
     private val jdbi: Jdbi = Jdbi.create("jdbc:postgresql://localhost:5432/postgres?user=jacob")
 
-    private fun <T> execute(callback: HandleCallback<T, Exception>): T = jdbi.withHandle(callback)
+    fun <T> execute(callback: HandleCallback<T, Exception>): T = jdbi.withHandle(callback)
 
     fun createDatabases() {
         execute(HandleCallback {
