@@ -1,4 +1,4 @@
-package me.xaanit.yogg.data
+package me.xaanit.yogg.beans
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.util.*

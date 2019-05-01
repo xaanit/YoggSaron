@@ -1,4 +1,4 @@
-package me.xaanit.yogg
+package me.xaanit.yogg.data
 
 enum class HeroPictures(val url: String) {
     WARRIOR("https://gamepedia.cursecdn.com/wowpedia/thumb/6/62/ClassIcon_warrior.png/39px-ClassIcon_warrior.png?version=507bceffe18514920575325b70013ab3"),

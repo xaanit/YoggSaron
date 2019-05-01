@@ -1,4 +1,4 @@
-package me.xaanit.yogg
+package me.xaanit.yogg.data
 
 object LevenshteinMetric {
 

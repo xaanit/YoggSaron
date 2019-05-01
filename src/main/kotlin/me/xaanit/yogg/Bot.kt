@@ -9,13 +9,23 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.get
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import me.xaanit.yogg.data.Card
-import me.xaanit.yogg.listeners.Ping
+import me.xaanit.yogg.beans.Card
+import me.xaanit.yogg.data.database.Postgres
+import me.xaanit.yogg.listeners.CardListener
+import me.xaanit.yogg.listeners.CommandHandler
 import java.io.File
 
+
 object Bot {
+
+
+
     @JvmStatic
     fun main(args: Array<String>) {
+       val repl = 0
+        val db = Postgres()
+        db.createDatabases()
+
         val gson = Gson()
         val http = HttpClient(OkHttp) {
 
@@ -45,7 +55,7 @@ object Bot {
         }
         val config = gson.fromJson(cfg.readText(), Config::class.java)
         val client = DiscordClientBuilder(config.token).build()
-        val listeners = listOf(/*CardListener(cards),*/ Ping())
+        val listeners = listOf(CardListener(cards), CommandHandler(db))
         client.login().subscribe()
         runBlocking {
             listeners.map { async { client.register(it) } }.forEach { it.await() }

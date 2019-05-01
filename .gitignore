@@ -67,3 +67,4 @@ src/test/
 
 config.json
 *.iml
+./libraries

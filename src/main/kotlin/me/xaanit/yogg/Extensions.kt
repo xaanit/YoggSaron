@@ -10,6 +10,15 @@ import me.xaanit.yogg.listeners.Listener
 suspend inline fun <reified T : Event> DiscordClient.register(listener: Listener<T>) {
     coroutineScope {
         eventDispatcher.on(T::class.java)
-                .flatMap { mono { listener.on(it) } }.awaitLast()
+                .flatMap {
+                    mono {
+                        try {
+                            listener.on(it)
+                        } catch (ex: Throwable) {
+                            ex.printStackTrace()
+                        }
+                    }
+                }
+                .awaitLast()
     }
 }
