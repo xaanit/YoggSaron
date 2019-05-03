@@ -35,7 +35,7 @@ class Eval : Command(name = "eval", admin = true) {
             it.setAuthor("Eval", null, HeroPictures.getUrl(""))
             it.setFooter("${System.currentTimeMillis() - start}ms", null)
             it.setTimestamp(Instant.now())
-            if (result.matches("(?:([^:/?#]+):)?(?:\\//([^/?#]*))?([^?#]*\\.(?:jpg|gif|png))(?:\\?([^#]*))?(?:#(.*))?".toRegex())) it.setImage(result) else it.setDescription("""
+            if (result.matches("(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*\\.(?:jpg|gif|png))(?:\\?([^#]*))?(?:#(.*))?".toRegex())) it.setImage(result) else it.setDescription("""
                ```
                $result
                ```
@@ -45,11 +45,15 @@ class Eval : Command(name = "eval", admin = true) {
 
     fun ScriptEngine.evalKotlin(originalScript: String, bindings: Bindings): Any? {
         val injection =
-                bindings.keys.joinToString("\n") { key -> "val $key = bindings[\"$key\"] as ${key::class.java.name}" }
-        val lastImportIndex = originalScript.lastIndexOf("import ")
-        val endOfImports = originalScript.substring(lastImportIndex).indexOf("\n") + lastImportIndex
-        val imports = originalScript.substring(0, endOfImports)
-        val script = originalScript.substring(endOfImports)
+                bindings.entries.joinToString("\n") { (key, value) -> "val $key = bindings[\"$key\"] as ${value::class.java.name.replace("object", "`object`")}" }
+        val imports = if (originalScript.contains("import")) {
+            val lastImportIndex = originalScript.lastIndexOf("import ")
+            val endOfImports = originalScript.substring(if (lastImportIndex == -1) 0 else lastImportIndex).indexOf("\n") + lastImportIndex
+            originalScript.substring(0, endOfImports)
+        } else {
+            ""
+        }
+        val script = originalScript.substring(imports.length)
         val evalScript = "$imports\n$injection\n$script"
         println(evalScript)
         return eval(evalScript, bindings)

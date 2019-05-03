@@ -9,4 +9,5 @@ interface Either {
                     Right(ex)
                 }
     }
+
 }

@@ -13,6 +13,8 @@ import me.xaanit.yogg.beans.Card
 import me.xaanit.yogg.data.database.Postgres
 import me.xaanit.yogg.listeners.CardListener
 import me.xaanit.yogg.listeners.CommandHandler
+import me.xaanit.yogg.listeners.OnlineListener
+import org.reflections.Reflections
 import java.io.File
 
 
@@ -22,7 +24,7 @@ object Bot {
 
     @JvmStatic
     fun main(args: Array<String>) {
-       val repl = 0
+        Reflections()
         val db = Postgres()
         db.createDatabases()
 
@@ -55,7 +57,7 @@ object Bot {
         }
         val config = gson.fromJson(cfg.readText(), Config::class.java)
         val client = DiscordClientBuilder(config.token).build()
-        val listeners = listOf(CardListener(cards), CommandHandler(db))
+        val listeners = listOf(CardListener(cards), CommandHandler(db), OnlineListener())
         client.login().subscribe()
         runBlocking {
             listeners.map { async { client.register(it) } }.forEach { it.await() }

@@ -9,13 +9,13 @@ import org.jdbi.v3.core.Jdbi
 
 class Postgres {
 
-    private val jdbi: Jdbi = Jdbi.create("jdbc:postgresql://localhost:5432/postgres?user=jacob")
+    private val jdbi: Jdbi = Jdbi.create("jdbc:postgresql://localhost:5432/postgres?user=postgres&password=password")
 
     fun <T> execute(callback: HandleCallback<T, Exception>): T = jdbi.withHandle(callback)
 
     fun createDatabases() {
         execute(HandleCallback {
-            it.execute("CREATE TABLE IF NOT EXISTS users(id BIGINT, admin BOOLEAN, blacklisted BOOLEAN)")
+            it.execute("CREATE TABLE IF NOT EXISTS users(id BIGINT, admin BOOLEAN DEFAULT FALSE, blacklisted BOOLEAN DEFAULT FALSE)")
             it.execute("""CREATE TABLE IF NOT EXISTS cards(
                 |id SERIAL NOT NULL PRIMARY KEY,
                 |creator BIGINT NOT NULL,
